@@ -1,5 +1,5 @@
-package {
-	
+package com.marsonstudio.util
+{	
 	import flash.events.*;
 	import flash.net.*;
 	import flash.utils.ByteArray;
