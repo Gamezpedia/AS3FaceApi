@@ -2,13 +2,15 @@ package net.metafor.faceapi.services
 {
 	import com.adobe.images.JPGEncoder;
 	
-	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
+	
+	import com.marsonstudio.util.UploadPostHelper;
 	
 	import net.metafor.faceapi.FaceApi;
 	
@@ -32,7 +34,7 @@ package net.metafor.faceapi.services
 		 * @param format
 		 * 
 		 */		
-		public function detect( urls : Array , format : String = "json" ) : void
+		public function detect( urls : Array , format : String = "json") : void
 		{			
 			var content:URLVariables = new URLVariables();
 			content.api_key = api.apiKey;
@@ -40,7 +42,7 @@ package net.metafor.faceapi.services
 			content.urls = urls.toString();
 			
 			var req:URLRequest = new URLRequest();
-			req.url = MAIN_URL+"detect."+format;
+			req.url = MAIN_URL  +"detect." + format;
 			req.method = URLRequestMethod.POST;
 			req.data = content;
 			
@@ -53,17 +55,17 @@ package net.metafor.faceapi.services
 		 * @param format
 		 * 
 		 */		
-		public function uploadAndDetect( image : Bitmap , format : String = "json" ) : void
+		public function uploadAndDetect( image : BitmapData , format : String = "json" , quality : int = 50) : void
 		{
-			var encoder:JPGEncoder = new JPGEncoder( 50 );
-			var bytes:ByteArray = encoder.encode( image.bitmapData );
+			var encoder:JPGEncoder = new JPGEncoder( quality );
+			var bytes:ByteArray = encoder.encode( image );
 			
 			var content:Object = new Object();
 			content.api_key = api.apiKey;
 			content.api_secret = api.apiSecret;
 			
 			var req:URLRequest = new URLRequest();
-			req.url = "http://api.face.com/faces/detect."+format;
+			req.url = MAIN_URL + "detect." + format;
 			req.contentType = 'multipart/form-data; boundary=' + UploadPostHelper.getBoundary();
 			req.method = URLRequestMethod.POST;
 			req.data = UploadPostHelper.getPostData( "img.jpg", bytes , content );
@@ -88,7 +90,7 @@ package net.metafor.faceapi.services
 			content.uids = uids.toString();
 			
 			var req:URLRequest = new URLRequest();
-			req.url = MAIN_URL+"recognize."+format;
+			req.url = MAIN_URL + "recognize."+format;
 			req.method = URLRequestMethod.POST;
 			req.data = content;
 			
@@ -104,15 +106,16 @@ package net.metafor.faceapi.services
 		 * @param format
 		 * 
 		 */		
-		public function uploadAndRecognize( image : Bitmap , uids : Array , fb_user : String = "" , fb_session : String ="" , format : String = "json" ) : void
+		public function uploadAndRecognize( image : BitmapData , uids : Array , fb_user : String = "" , fb_session : String ="" , format : String = "json" , quality : int = 50 ) : void
 		{
-			var encoder:JPGEncoder = new JPGEncoder( 50 );
-			var bytes:ByteArray = encoder.encode( image.bitmapData );
+			var encoder:JPGEncoder = new JPGEncoder( quality );
+			var bytes:ByteArray = encoder.encode( image );
 			
 			var content:Object = new Object();
 			content.api_key = api.apiKey;
 			content.api_secret = api.apiSecret;
 			content.uids = uids.toString();
+			
 			if( fb_user != "" && fb_session != "" ) content.user_auth = "fb_user:"+fb_user+",fb_session:"+fb_session;
 			
 			var req:URLRequest = new URLRequest();

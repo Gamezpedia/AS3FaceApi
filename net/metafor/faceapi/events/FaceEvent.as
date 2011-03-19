@@ -7,6 +7,7 @@ package net.metafor.faceapi.events
 	public class FaceEvent extends Event
 	{		
 		public static const SUCCESS			:String = "faceEvent.success";
+		public static const TAG_SAVED		:String = "faceEvent.tagSaved";
 		public static const FAIL			:String = "faceEvent.fail";
 		
 		public var data						:*;

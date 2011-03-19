@@ -52,8 +52,22 @@ package net.metafor.faceapi.services
 		
 		private function loaderCompleteHandler( evt : Event ) : void
 		{
-			var result:* = JSON.decode( evt.target.data );
-			dispatchEvent( new FaceEvent( FaceEvent.SUCCESS , result , evt.target.data , new FaceResult( result ) ));
+			var result:*;
+		
+			if (evt.target.data.indexOf('<?xml version="1.0" encoding="utf-8"?>') == -1)
+			{
+				result = JSON.decode( evt.target.data );
+			} else {
+				result = new XML( evt.target.data );
+			}
+			
+			if (evt.target.data.indexOf('saved_tags') == -1)
+			{
+				dispatchEvent( new FaceEvent( FaceEvent.SUCCESS , result , evt.target.data , new FaceResult( result ) ));
+			} else {
+				dispatchEvent( new FaceEvent( FaceEvent.TAG_SAVED , result , evt.target.data , new FaceResult( result ) ));
+			}
+			
 		}
 		
 		private function ioErrorHandler( evt : IOErrorEvent ) : void
